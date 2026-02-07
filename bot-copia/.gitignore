@@ -1,0 +1,12 @@
+# Ignorar variables de entorno
+.env
+
+# Ignorar archivos de log
+*.log
+ngrok.log
+
+# Ignorar caché de Python
+__pycache__/
+
+# Ignorar archivos de datos generados
+data/

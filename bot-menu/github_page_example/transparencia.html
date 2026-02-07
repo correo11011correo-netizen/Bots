@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" class="visual-option-1">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transparencia - Diputados de Posadas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-landmark shield-icon"></i>
+                <h1>Diputados de Posadas</h1>
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="legislacion.html">Legislación</a></li>
+                    <li><a href="agenda.html">Agenda Pública</a></li>
+                    <li><a href="transparencia.html" class="active">Transparencia</a></li>
+                    <li><a href="noticias.html">Noticias y Prensa</a></li>
+                    <li><a href="servicios.html">Servicios Ciudadanos</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="container">
+            <h2 class="section-title">Transparencia y Acceso a la Información</h2>
+
+            <div class="card-section">
+                <div class="card">
+                    <h3><i class="fas fa-file-invoice-dollar"></i> Declaraciones Juradas</h3>
+                    <p>Accede a las declaraciones juradas de nuestros diputados, en cumplimiento de las leyes de ética pública.</p>
+                    <a href="#" class="button">Ver Declaraciones</a>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-chart-bar"></i> Informes de Gestión</h3>
+                    <p>Consulta los informes periódicos sobre la gestión de recursos y la ejecución de proyectos legislativos.</p>
+                    <a href="#" class="button">Descargar Informes</a>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-gavel"></i> Registro de Votaciones</h3>
+                    <p>Historial detallado de todas las votaciones realizadas en las sesiones del Parlamento.</p>
+                    <a href="#" class="button">Ver Votaciones</a>
+                </div>
+            </div>
+
+            <section style="margin-top: 50px;">
+                <h3 style="font-size: 2em; color: var(--text-color-dark); margin-bottom: 20px;">Leyes de Transparencia</h3>
+                <div class="card">
+                    <h4>Ley de Acceso a la Información Pública</h4>
+                    <p>Conoce tus derechos y los mecanismos para solicitar información al Estado.</p>
+                    <a href="#" class="button">Ver Ley</a>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h4>Código de Ética Pública</h4>
+                    <p>Principios y normas que rigen la conducta de los funcionarios públicos.</p>
+                    <a href="#" class="button">Ver Código</a>
+                </div>
+            </section>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Diputados de Posadas. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.getElementById('mobile-menu').addEventListener('click', function() {
+            const nav = document.getElementById('nav');
+            const toggle = document.getElementById('mobile-menu');
+            nav.classList.toggle('nav-open');
+            toggle.classList.toggle('active');
+        });
+        document.querySelectorAll('#nav ul li a').forEach(item => {
+            item.addEventListener('click', function() {
+                // Optional: Close menu after clicking on a link
+                // document.getElementById('nav').classList.remove('nav-open');
+                // document.getElementById('mobile-menu').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

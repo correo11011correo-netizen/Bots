@@ -1,0 +1,5 @@
+# Ignorar base de datos
+*.db
+
+# Ignorar dependencias de Node.js
+node_modules/

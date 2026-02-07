@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - Sistema de Agua</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-tint"></i>
+                <h1>Sistema de Agua</h1>
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="rutas.html">Rutas</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="deudas.html">Deudas</a></li>
+                    <li><a href="inventario.html" class="active">Inventario</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>Gestión de Inventario</h2>
+
+        <section class="form-card" style="margin-bottom: 30px;">
+            <h3><i class="fas fa-plus-square"></i> Añadir Nuevo Producto</h3>
+            <form id="addProductForm">
+                <div class="form-group">
+                    <label for="productName">Nombre del Producto:</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Precio Unitario:</label>
+                    <input type="number" id="productPrice" min="0.01" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="productStock">Stock Inicial:</label>
+                    <input type="number" id="productStock" min="0" step="1" value="0" required>
+                </div>
+                <button type="submit" class="button-accent"><i class="fas fa-plus"></i> Añadir Producto</button>
+            </form>
+        </section>
+
+        <section>
+            <h3><i class="fas fa-boxes"></i> Productos en Inventario</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                    <!-- Productos se cargarán aquí por JavaScript -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Sistema de Agua. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData(); // Ensure appData is loaded
+
+            const productsTableBody = document.getElementById('productsTableBody');
+            const addProductForm = document.getElementById('addProductForm');
+
+            function renderProducts() {
+                productsTableBody.innerHTML = '';
+                if (appData.products.length === 0) {
+                    productsTableBody.innerHTML = '<tr><td colspan="5">No hay productos en inventario.</td></tr>';
+                    return;
+                }
+                appData.products.forEach(product => {
+                    const row = productsTableBody.insertRow();
+                    row.innerHTML = `
+                        <td data-label="ID" class="id-cell">${product.id}</td>
+                        <td data-label="Producto">${product.name}</td>
+                        <td data-label="Precio">$${product.price.toFixed(2)}</td>
+                        <td data-label="Stock">${product.stock}</td>
+                        <td data-label="Acciones" class="actions">
+                            <button class="button" onclick="editProductUI('${product.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="button-danger" onclick="deleteProductUI('${product.id}')"><i class="fas fa-trash"></i></button>
+                            <button class="button-accent" onclick="updateStockUI('${product.id}', 1)"><i class="fas fa-plus"></i></button>
+                            <button class="button" onclick="updateStockUI('${product.id}', -1)"><i class="fas fa-minus"></i></button>
+                        </td>
+                    `;
+                });
+            }
+
+            addProductForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('productName').value;
+                const price = parseFloat(document.getElementById('productPrice').value);
+                const stock = parseInt(document.getElementById('productStock').value);
+
+                if (isNaN(price) || price <= 0 || isNaN(stock) || stock < 0) {
+                    alert('Por favor, ingrese valores válidos para precio y stock.');
+                    return;
+                }
+                addProduct({ name, price, stock });
+                renderProducts();
+                addProductForm.reset();
+            });
+
+            // Global functions for actions from table
+            window.editProductUI = (id) => {
+                const product = getProductById(id);
+                if (product) {
+                    const newName = prompt('Editar nombre:', product.name);
+                    const newPrice = prompt('Editar precio:', product.price);
+                    const newStock = prompt('Editar stock:', product.stock);
+
+                    if (newName !== null && newPrice !== null && newStock !== null) {
+                        const parsedPrice = parseFloat(newPrice);
+                        const parsedStock = parseInt(newStock);
+                        if (isNaN(parsedPrice) || parsedPrice <= 0 || isNaN(parsedStock) || parsedStock < 0) {
+                            alert('Valores de edición inválidos.');
+                            return;
+                        }
+                        updateProduct({ id: product.id, name: newName, price: parsedPrice, stock: parsedStock });
+                        renderProducts();
+                    }
+                }
+            };
+
+            window.deleteProductUI = (id) => {
+                if (confirm('¿Estás seguro de que quieres eliminar este producto? Esto no ajustará el stock de entregas pasadas.')) {
+                    deleteProduct(id);
+                    renderProducts();
+                }
+            };
+
+            window.updateStockUI = (id, change) => {
+                const product = getProductById(id);
+                if (product) {
+                    const currentStock = product.stock || 0;
+                    let newStock = currentStock + change;
+
+                    if (change === 1 || change === -1) { // Quick add/subtract
+                        if (newStock < 0) newStock = 0;
+                    } else { // Custom amount
+                        const amountStr = prompt(`Cambiar stock para ${product.name}. Stock actual: ${currentStock}. Ingrese el cambio (ej. 5 para sumar, -3 para restar):`);
+                        const amount = parseInt(amountStr);
+                        if (amountStr === null || isNaN(amount)) return;
+                        newStock = currentStock + amount;
+                        if (newStock < 0) newStock = 0;
+                    }
+                    updateProduct({ id: product.id, stock: newStock });
+                    renderProducts();
+                }
+            };
+
+
+            renderProducts();
+        });
+    </script>
+</body>
+</html>

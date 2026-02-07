@@ -1,0 +1,4 @@
+{
+    "option_text": "Bot para Venta de Celulares",
+    "entry_point": "main.handle_celulares_flow"
+}

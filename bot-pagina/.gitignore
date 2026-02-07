@@ -1,0 +1,18 @@
+# Ignorar variables de entorno
+.env
+
+# Ignorar archivos de respaldo
+*.bak
+
+# Ignorar caché de Python
+__pycache__/
+
+# Ignorar datos de chats
+chats/
+
+# Ignorar entornos virtuales
+env/
+venv/
+
+# Ignorar archivos de log
+logs/

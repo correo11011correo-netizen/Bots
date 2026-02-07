@@ -1,0 +1,19 @@
+# Ignorar archivos temporales y de descarga
+015c9bb0376d9c3c9dab434ecb3bd57961dce1921a5b1bf134c6f1b824c25c8d
+015c9bb0376d9c3c9dab434ecb3bd57961dce1921a5b1bf134c6f1b824c25c8d.aria2
+
+# Ignorar archivos de log
+*.log
+aria2c-log.txt
+curl_output.txt
+err.log
+out.log
+server_output.txt
+server.log
+wget-log
+
+# Ignorar caché
+.cache/
+
+# Ignorar entorno virtual
+venv/

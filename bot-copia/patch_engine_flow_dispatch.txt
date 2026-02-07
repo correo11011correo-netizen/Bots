@@ -1,0 +1,17 @@
+# Flow-specific input handling
+try:
+    st = get(sender) or {}
+    if st.get("flow") == "sorteos":
+        from flows.sorteos.sorteos_flow import handle_input as sorteos_input
+        if sorteos_input(cfg, sender, text, send_msg):
+            continue
+    if st.get("flow") == "referidos":
+        from flows.referidos.referidos_flow import handle_input as referidos_input
+        if referidos_input(cfg, sender, text, send_msg):
+            continue
+    if st.get("flow") == "prestamos":
+        from flows.prestamos.prestamos_flow import handle_input as prestamos_input
+        if prestamos_input(cfg, sender, text, send_msg):
+            continue
+except Exception as e:
+    print(f"⚠️ Error routing flow input: {e}")

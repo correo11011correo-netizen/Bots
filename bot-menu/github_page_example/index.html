@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es" class="visual-option-1">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diputados de Posadas</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome para iconos -->
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-landmark shield-icon"></i> <!-- Placeholder para escudo -->
+                <h1>Diputados de Posadas</h1>
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html" class="active">Inicio</a></li>
+                    <li><a href="legislacion.html">Legislación</a></li>
+                    <li><a href="agenda.html">Agenda Pública</a></li>
+                    <li><a href="transparencia.html">Transparencia</a></li>
+                    <li><a href="noticias.html">Noticias y Prensa</a></li>
+                    <li><a href="servicios.html">Servicios Ciudadanos</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>Trabajando por el Futuro de Posadas</h2>
+            <p>Compromiso, Transparencia y Participación Ciudadana en la labor legislativa de nuestros diputados.</p>
+            <a href="agenda.html" class="button">Ver Agenda Pública</a>
+        </section>
+
+        <section class="container">
+            <h2 class="section-title">Mensaje del Diputado</h2>
+            <div class="card-section">
+                <div class="card">
+                    <h3><i class="fas fa-bullhorn"></i> Nuestro Compromiso</h3>
+                    <p>Estimados ciudadanos de Posadas, mi compromiso es trabajar incansablemente para representarlos, defender sus intereses y construir un futuro más próspero y justo para nuestra comunidad. La cercanía con cada uno de ustedes es mi prioridad.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-handshake"></i> Con la Comunidad</h3>
+                    <p>Creemos en una gestión abierta y participativa. Sus ideas y preocupaciones son fundamentales para el desarrollo de proyectos legislativos que realmente impacten de manera positiva en la vida de todos.</p>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i> Visión de Futuro</h3>
+                    <p>Estamos enfocados en impulsar iniciativas que fomenten el crecimiento económico, la educación de calidad, la salud accesible y el desarrollo sostenible, sentando las bases para una Posadas líder en la región.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="container">
+            <h2 class="section-title">Últimas Noticias y Proyectos</h2>
+            <div class="card-section">
+                <div class="card">
+                    <h3><i class="fas fa-newspaper"></i> Aprobación de Ley de Fomento Pyme</h3>
+                    <p>Se ha aprobado el proyecto de ley que busca incentivar a las pequeñas y medianas empresas de la región, generando empleo y desarrollo local.</p>
+                    <a href="noticias.html" class="button">Leer Más</a>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-microscope"></i> Iniciativa para la Investigación Local</h3>
+                    <p>Presentamos un proyecto para destinar fondos a la investigación científica y tecnológica en universidades y centros de Posadas.</p>
+                    <a href="noticias.html" class="button">Leer Más</a>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-hand-holding-heart"></i> Apoyo a Programas Sociales</h3>
+                    <p>Reafirmamos nuestro compromiso con los programas de asistencia social, buscando ampliar su alcance y efectividad en toda la provincia.</p>
+                    <a href="noticias.html" class="button">Leer Más</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="container theme-switcher">
+            <h3 class="section-title" style="font-size: 1.8em; margin-bottom: 20px;">Opciones Visuales (para demostración):</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                <button class="button" onclick="document.documentElement.className='visual-option-1'">Opción 1 (Azul Oficial)</button>
+                <button class="button" onclick="document.documentElement.className='visual-option-2'">Opción 2 (Verde Ejecutivo)</button>
+                <button class="button" onclick="document.documentElement.className='visual-option-3'">Opción 3 (Gris Moderno)</button>
+                <button class="button" onclick="document.documentElement.className='visual-option-4'">Opción 4 (Patriótico)</button>
+                <button class="button" onclick="document.documentElement.className='visual-option-5'">Opción 5 (Herencia Dorada)</button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Diputados de Posadas. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.getElementById('mobile-menu').addEventListener('click', function() {
+            const nav = document.getElementById('nav');
+            const toggle = document.getElementById('mobile-menu');
+            nav.classList.toggle('nav-open');
+            toggle.classList.toggle('active');
+        });
+        document.querySelectorAll('#nav ul li a').forEach(item => {
+            item.addEventListener('click', function() {
+                // Optional: Close menu after clicking on a link
+                // document.getElementById('nav').classList.remove('nav-open');
+                // document.getElementById('mobile-menu').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

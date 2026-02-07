@@ -1,0 +1,4 @@
+{
+    "option_text": "Bot para Casino",
+    "entry_point": "main.handle_casino_flow"
+}

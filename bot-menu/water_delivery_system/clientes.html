@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - Sistema de Agua</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-tint"></i>
+                <h1>Sistema de Agua</h1>
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="rutas.html">Rutas</a></li>
+                    <li><a href="clientes.html" class="active">Clientes</a></li>
+                    <li><a href="deudas.html">Deudas</a></li>
+                    <li><a href="inventario.html">Inventario</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>Gestión de Clientes</h2>
+
+        <section class="form-card" style="margin-bottom: 30px;">
+            <h3><i class="fas fa-user-plus"></i> Añadir Nuevo Cliente</h3>
+            <form id="addCustomerForm">
+                <div class="form-group">
+                    <label for="customerName">Nombre:</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerAddress">Dirección:</label>
+                    <input type="text" id="customerAddress" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerPhone">Teléfono:</label>
+                    <input type="tel" id="customerPhone">
+                </div>
+                <div class="form-group">
+                    <label for="customerNotes">Notas:</label>
+                    <textarea id="customerNotes"></textarea>
+                </div>
+                <button type="submit" class="button-accent"><i class="fas fa-plus"></i> Añadir Cliente</button>
+            </form>
+        </section>
+
+        <section>
+            <h3><i class="fas fa-users"></i> Clientes Registrados</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                        <th>Deuda</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="customersTableBody">
+                    <!-- Clientes se cargarán aquí por JavaScript -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Sistema de Agua. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData(); // Ensure appData is loaded
+
+            const customersTableBody = document.getElementById('customersTableBody');
+            const addCustomerForm = document.getElementById('addCustomerForm');
+
+            function renderCustomers() {
+                customersTableBody.innerHTML = '';
+                if (appData.customers.length === 0) {
+                    customersTableBody.innerHTML = '<tr><td colspan="6">No hay clientes registrados.</td></tr>';
+                    return;
+                }
+                appData.customers.forEach(customer => {
+                    const row = customersTableBody.insertRow();
+                    row.innerHTML = `
+                        <td data-label="ID" class="id-cell">${customer.id}</td>
+                        <td data-label="Nombre">${customer.name}</td>
+                        <td data-label="Dirección">${customer.address}</td>
+                        <td data-label="Teléfono">${customer.phone || '-'}</td>
+                        <td data-label="Deuda">$${(customer.debt || 0).toFixed(2)}</td>
+                        <td data-label="Acciones" class="actions">
+                            <button class="button" onclick="editCustomerUI('${customer.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="button-danger" onclick="deleteCustomerUI('${customer.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                });
+            }
+
+            addCustomerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('customerName').value;
+                const address = document.getElementById('customerAddress').value;
+                const phone = document.getElementById('customerPhone').value;
+                const notes = document.getElementById('customerNotes').value;
+                addCustomer({ name, address, phone, notes });
+                renderCustomers();
+                addCustomerForm.reset();
+            });
+
+            // Global functions for actions from table
+            window.editCustomerUI = (id) => {
+                const customer = getCustomerById(id);
+                if (customer) {
+                    const newName = prompt('Editar nombre:', customer.name);
+                    const newAddress = prompt('Editar dirección:', customer.address);
+                    const newPhone = prompt('Editar teléfono:', customer.phone);
+                    const newNotes = prompt('Editar notas:', customer.notes);
+
+                    if (newName !== null && newAddress !== null && newPhone !== null && newNotes !== null) {
+                        updateCustomer({ id: customer.id, name: newName, address: newAddress, phone: newPhone, notes: newNotes });
+                        renderCustomers();
+                    }
+                }
+            };
+
+            window.deleteCustomerUI = (id) => {
+                if (confirm('¿Estás seguro de que quieres eliminar este cliente? Esto también eliminará su deuda y entregas asociadas.')) {
+                    deleteCustomer(id);
+                    renderCustomers();
+                }
+            };
+
+            renderCustomers();
+        });
+    </script>
+</body>
+</html>

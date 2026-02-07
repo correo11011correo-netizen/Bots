@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es" class="visual-option-1">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Pública - Diputados de Posadas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-landmark shield-icon"></i>
+                <h1>Diputados de Posadas</h1>
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="legislacion.html">Legislación</a></li>
+                    <li><a href="agenda.html" class="active">Agenda Pública</a></li>
+                    <li><a href="transparencia.html">Transparencia</a></li>
+                    <li><a href="noticias.html">Noticias y Prensa</a></li>
+                    <li><a href="servicios.html">Servicios Ciudadanos</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="container">
+            <h2 class="section-title">Nuestra Agenda Pública</h2>
+
+            <div class="card-section">
+                <div class="card">
+                    <h3><i class="fas fa-calendar-alt"></i> Próximas Sesiones</h3>
+                    <p>Calendario y temario de las próximas sesiones ordinarias y extraordinarias del parlamento.</p>
+                    <a href="#" class="button">Ver Calendario</a>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-microphone"></i> Audiencias Públicas</h3>
+                    <p>Información sobre audiencias públicas, temas a tratar y cómo participar.</p>
+                    <a href="#" class="button">Participar</a>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-map-marker-alt"></i> Recorridos y Reuniones</h3>
+                    <p>Conoce los próximos recorridos por barrios y reuniones con organizaciones de la sociedad civil.</p>
+                    <a href="#" class="button">Ver Recorridos</a>
+                </div>
+            </div>
+
+            <section style="margin-top: 50px;">
+                <h3 style="font-size: 2em; color: var(--text-color-dark); margin-bottom: 20px;">Eventos Destacados</h3>
+                <div class="card">
+                    <h4><i class="fas fa-comments"></i> Mesa de Diálogo por la Seguridad</h4>
+                    <p><strong>Fecha:</strong> 5 de Febrero de 2026</p>
+                    <p><strong>Hora:</strong> 15:00 hs</p>
+                    <p><strong>Lugar:</strong> Centro Comunitario 'El Progreso'</p>
+                    <p>Invitamos a vecinos y expertos a debatir sobre estrategias de seguridad urbana.</p>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h4><i class="fas fa-leaf"></i> Jornada de Concientización Ambiental</h4>
+                    <p><strong>Fecha:</strong> 10 de Febrero de 2026</p>
+                    <p><strong>Hora:</strong> 09:00 hs</p>
+                    <p><strong>Lugar:</strong> Parque de la Ciudad</p>
+                    <p>Actividades y charlas sobre el cuidado del medio ambiente en Posadas.</p>
+                </div>
+            </section>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Diputados de Posadas. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.getElementById('mobile-menu').addEventListener('click', function() {
+            const nav = document.getElementById('nav');
+            const toggle = document.getElementById('mobile-menu');
+            nav.classList.toggle('nav-open');
+            toggle.classList.toggle('active');
+        });
+        document.querySelectorAll('#nav ul li a').forEach(item => {
+            item.addEventListener('click', function() {
+                // Optional: Close menu after clicking on a link
+                // document.getElementById('nav').classList.remove('nav-open');
+                // document.getElementById('mobile-menu').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

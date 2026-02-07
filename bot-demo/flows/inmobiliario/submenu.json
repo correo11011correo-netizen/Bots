@@ -1,0 +1,4 @@
+{
+    "option_text": "Bot para Inmobiliaria",
+    "entry_point": "main.handle_inmobiliario_flow"
+}

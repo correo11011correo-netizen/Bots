@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es" class="visual-option-1">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticias y Prensa - Diputados de Posadas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-landmark shield-icon"></i>
+                <h1>Diputados de Posadas</h1>
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="legislacion.html">Legislación</a></li>
+                    <li><a href="agenda.html">Agenda Pública</a></li>
+                    <li><a href="transparencia.html">Transparencia</a></li>
+                    <li><a href="noticias.html" class="active">Noticias y Prensa</a></li>
+                    <li><a href="servicios.html">Servicios Ciudadanos</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="container">
+            <h2 class="section-title">Novedades y Comunicados de Prensa</h2>
+
+            <div class="card-section">
+                <div class="card">
+                    <h3><i class="fas fa-bullhorn"></i> Inauguración de Nuevo Centro Cívico</h3>
+                    <p>El diputado X participó en la inauguración del nuevo Centro Cívico en el barrio Y, un espacio para la comunidad.</p>
+                    <p class="text-muted"><small>Fecha: 22 de Enero de 2026</small></p>
+                    <a href="#" class="button">Ver Noticia Completa</a>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-comment-dots"></i> Declaraciones sobre Presupuesto 2026</h3>
+                    <p>Comunicado oficial sobre el análisis y la postura de los diputados respecto al presupuesto provincial del año entrante.</p>
+                    <p class="text-muted"><small>Fecha: 15 de Enero de 2026</small></p>
+                    <a href="#" class="button">Leer Comunicado</a>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-hand-holding-medical"></i> Reunión con Sector Salud</h3>
+                    <p>Encuentro con representantes del sector de la salud para abordar desafíos y proponer mejoras en la atención pública.</p>
+                    <p class="text-muted"><small>Fecha: 8 de Enero de 2026</small></p>
+                    <a href="#" class="button">Más Información</a>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="#" class="button">Cargar Más Noticias</a>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Diputados de Posadas. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.getElementById('mobile-menu').addEventListener('click', function() {
+            const nav = document.getElementById('nav');
+            const toggle = document.getElementById('mobile-menu');
+            nav.classList.toggle('nav-open');
+            toggle.classList.toggle('active');
+        });
+        document.querySelectorAll('#nav ul li a').forEach(item => {
+            item.addEventListener('click', function() {
+                // Optional: Close menu after clicking on a link
+                // document.getElementById('nav').classList.remove('nav-open');
+                // document.getElementById('mobile-menu').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Agua</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-tint"></i>
+                <h1>Sistema de Agua</h1>
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html" class="active">Dashboard</a></li>
+                    <li><a href="rutas.html">Rutas</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="deudas.html">Deudas</a></li>
+                    <li><a href="inventario.html">Inventario</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>Dashboard Principal</h2>
+
+        <section class="dashboard-stats">
+            <div class="stat-card">
+                <div class="value" id="totalCustomers">0</div>
+                <div class="label">Total Clientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="outstandingDebt">0.00</div>
+                <div class="label">Deuda Pendiente</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="productsInStock">0</div>
+                <div class="label">Productos en Stock</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="pendingDeliveries">0</div>
+                <div class="label">Entregas Pendientes (Hoy)</div>
+            </div>
+        </section>
+
+        <section class="card-section">
+            <div class="card">
+                <h3><i class="fas fa-route"></i> Rutas Activas</h3>
+                <p>Gestiona tus rutas de entrega, asigna clientes y monitoriza el progreso diario.</p>
+                <a href="rutas.html" class="button"><i class="fas fa-arrow-right"></i> Ir a Rutas</a>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-users"></i> Clientes</h3>
+                <p>Administra la información de tus clientes, historial de compras y detalles de contacto.</p>
+                <a href="clientes.html" class="button"><i class="fas fa-arrow-right"></i> Ir a Clientes</a>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-money-bill-wave"></i> Deudas</h3>
+                <p>Controla los saldos pendientes de tus clientes y registra los pagos recibidos.</p>
+                <a href="deudas.html" class="button"><i class="fas fa-arrow-right"></i> Ir a Deudas</a>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-boxes"></i> Inventario</h3>
+                <p>Mantén un seguimiento de tus productos: bidones, sodas y otros artículos en stock.</p>
+                <a href="inventario.html" class="button"><i class="fas fa-arrow-right"></i> Ir a Inventario</a>
+            </div>
+        </section>
+
+        <section style="margin-top: 50px;">
+            <h2>Próximas Entregas (Hoy)</h2>
+            <div class="card">
+                <ul id="todayDeliveriesList" style="list-style: none; padding: 0;">
+                    <!-- Deliveries will be loaded here by JavaScript -->
+                    <li>No hay entregas pendientes para hoy.</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Sistema de Agua. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Function to render dashboard stats
+            function renderDashboardStats() {
+                document.getElementById('totalCustomers').textContent = appData.customers.length;
+
+                const totalDebt = appData.customers.reduce((sum, cust) => sum + (cust.debt || 0), 0);
+                document.getElementById('outstandingDebt').textContent = totalDebt.toFixed(2);
+
+                const totalStock = appData.products.reduce((sum, prod) => sum + (prod.stock || 0), 0);
+                document.getElementById('productsInStock').textContent = totalStock;
+
+                const today = new Date().toISOString().slice(0, 10);
+                const pending = appData.deliveries.filter(d => d.date === today && d.status === 'pending');
+                document.getElementById('pendingDeliveries').textContent = pending.length;
+            }
+
+            // Function to render today's deliveries
+            function renderTodayDeliveries() {
+                const today = new Date().toISOString().slice(0, 10);
+                const todayDeliveries = appData.deliveries.filter(d => d.date === today && d.status === 'pending');
+                const list = document.getElementById('todayDeliveriesList');
+                list.innerHTML = '';
+
+                if (todayDeliveries.length === 0) {
+                    list.innerHTML = '<li>No hay entregas pendientes para hoy.</li>';
+                    return;
+                }
+
+                todayDeliveries.forEach(delivery => {
+                    const customer = getCustomerById(delivery.customerId);
+                    if (customer) {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <strong>Cliente:</strong> ${customer.name}<br>
+                            <strong>Ruta:</strong> ${getRouteName(delivery.routeId)}<br>
+                            <strong>Productos:</strong> ${delivery.products.map(p => `${getProductName(p.id)} x ${p.qty}`).join(', ')}
+                            <hr style="border-top: 1px solid var(--border-color); margin: 10px 0;">
+                        `;
+                        list.appendChild(li);
+                    }
+                });
+            }
+
+            // Initial render
+            renderDashboardStats();
+            renderTodayDeliveries();
+
+            // Refresh dashboard after any data changes (optional, but good for real-time feel)
+            window.addEventListener('storage', () => {
+                loadData();
+                renderDashboardStats();
+                renderTodayDeliveries();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+{
+    "option_text": "Control de Base de Datos Local",
+    "entry_point": "db_control_flow.handle_db_control"
+}

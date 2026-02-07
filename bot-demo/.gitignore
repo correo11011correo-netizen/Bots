@@ -1,0 +1,14 @@
+# Ignorar archivos de respaldo
+*.bak
+
+# Ignorar caché de Python
+__pycache__/
+
+# Ignorar datos de chats
+chats/
+
+# Ignorar entorno virtual
+env/
+
+# Ignorar archivos de log
+logs/

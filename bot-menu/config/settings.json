@@ -1,0 +1,9 @@
+{
+  "whatsapp_business_api_token": "EAAWpnXQ6Y8UBQN9nNUSkctO5QuNZCCKuUaxuZBJgVbIeoUS8jDMfYOn4lddLjWON5pDVhArqm4UYaZB0CeOwy9hs3GwyMnX5e5GdYcMjxyCFmscrjivfWOGV0H9Gh0YD3rKZCwK3UvcoHwrpI9qdE6CSfdsWOZAPF6mCu11wZBOoOQvYwq5yafI92q8BFJFBmBZAAZDZD",
+  "whatsapp_business_phone_id": "880275461842101",
+  "verify_token": "bot1234",
+  "meta_app_id": "",
+  "meta_app_secret": "bot1234",
+  "ngrok_public_url": "https://contextually-unhabited-sommer.ngrok-free.dev",
+  "default_test_number": "5493765376985"
+}

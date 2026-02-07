@@ -1,0 +1,4 @@
+{
+  "option_text": "💬 Chatear con Gemini",
+  "entry_point": "gemini_flow.handle_gemini_chat"
+}

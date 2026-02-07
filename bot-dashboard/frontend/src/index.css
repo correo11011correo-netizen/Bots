@@ -1,0 +1,229 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f0f2f5;
+}
+
+#root {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.app-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  box-shadow: 0 1px 1px 0 rgba(0,0,0,.06), 0 2px 5px 0 rgba(0,0,0,.2);
+}
+
+.conversations-panel {
+  flex: 0 0 350px; /* Fixed width for conversations */
+  background-color: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-panel {
+  flex: 1; /* Takes remaining space */
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+}
+
+/* Header */
+.panel-header {
+  padding: 10px 16px;
+  background-color: #ededed;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #111b21;
+}
+
+/* Conversation List */
+.conversation-list {
+  flex: 1;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.conversation-item {
+  display: flex;
+  padding: 15px 16px;
+  border-bottom: 1px solid #f0f2f5;
+  cursor: pointer;
+  align-items: center;
+}
+
+.conversation-item:hover {
+  background-color: #f5f6f6;
+}
+
+.conversation-item.active {
+  background-color: #e0f2f1; /* Highlight active chat */
+}
+
+.conversation-info {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.conversation-info h3 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  color: #111b21;
+}
+
+.conversation-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #667781;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversation-meta {
+  font-size: 12px;
+  color: #667781;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.intervention-tag {
+  background-color: #ffe0b2; /* Light orange */
+  color: #e65100; /* Darker orange */
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  margin-left: 8px;
+  font-weight: bold;
+}
+
+/* Chat Messages */
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background-image: url('https://user-images.githubusercontent.com/15075759/28719142-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* WhatsApp-like background */
+  background-size: cover;
+  display: flex;
+  flex-direction: column-reverse; /* To stack messages from bottom */
+}
+
+.message-bubble {
+  max-width: 60%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.message-bubble.client {
+  background-color: #ffffff;
+  align-self: flex-start;
+  margin-right: auto;
+  border: 1px solid #e0e0e0;
+}
+
+.message-bubble.bot {
+  background-color: #dcf8c6;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.message-bubble.human {
+  background-color: #a0e0e6; /* Light blue for human agent messages */
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.message-sender {
+  font-size: 12px;
+  color: #667781;
+  margin-bottom: 2px;
+}
+
+.message-time {
+  font-size: 10px;
+  color: #888;
+  text-align: right;
+  margin-top: 5px;
+}
+
+/* Chat Input */
+.chat-input-area {
+  padding: 10px 16px;
+  background-color: #f0f2f5;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+}
+
+.chat-input-area input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  margin-right: 10px;
+  font-size: 15px;
+}
+
+.chat-input-area button {
+  background-color: #00a884;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
+}
+
+.chat-input-area button:hover {
+  background-color: #008f72;
+}
+
+.toggle-intervention-button {
+  background-color: #ff9800; /* Orange for intervention */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-intervention-button:hover {
+  background-color: #fb8c00;
+}
+
+/* Empty State */
+.empty-chat-panel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  color: #667781;
+  background-color: #f8f9fa;
+}

@@ -1,0 +1,4 @@
+{
+  "option_text": "💵 Solicitar préstamo",
+  "entry_point": "prestamos_flow.handle_prestamo"
+}

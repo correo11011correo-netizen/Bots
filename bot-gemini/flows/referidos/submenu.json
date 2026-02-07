@@ -1,0 +1,4 @@
+{
+  "option_text": "👥 Sistema de referidos",
+  "entry_point": "referidos_flow.handle_referidos"
+}

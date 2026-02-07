@@ -1,0 +1,8 @@
+# Ignorar variables de entorno
+.env
+
+# Ignorar archivos de log
+conversations.log
+
+# Ignorar caché de Python
+__pycache__/

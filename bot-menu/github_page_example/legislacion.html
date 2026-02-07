@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" class="visual-option-1">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legislación - Diputados de Posadas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-landmark shield-icon"></i>
+                <h1>Diputados de Posadas</h1>
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="legislacion.html" class="active">Legislación</a></li>
+                    <li><a href="agenda.html">Agenda Pública</a></li>
+                    <li><a href="transparencia.html">Transparencia</a></li>
+                    <li><a href="noticias.html">Noticias y Prensa</a></li>
+                    <li><a href="servicios.html">Servicios Ciudadanos</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="container">
+            <h2 class="section-title">Nuestra Labor Legislativa</h2>
+
+            <div class="card-section">
+                <div class="card">
+                    <h3><i class="fas fa-gavel"></i> Proyectos de Ley</h3>
+                    <p>Conoce los proyectos de ley presentados por nuestros diputados, su estado actual y su impacto en la comunidad.</p>
+                    <a href="#" class="button">Ver Proyectos</a>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-vote-yea"></i> Registro de Votaciones</h3>
+                    <p>Accede al historial de votaciones en las sesiones legislativas, garantizando la transparencia de cada decisión.</p>
+                    <a href="#" class="button">Ver Votaciones</a>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-users-cog"></i> Comisiones</h3>
+                    <p>Infórmate sobre las comisiones legislativas de las que forman parte nuestros representantes y sus áreas de trabajo.</p>
+                    <a href="#" class="button">Ver Comisiones</a>
+                </div>
+            </div>
+
+            <section style="margin-top: 50px;">
+                <h3 style="font-size: 2em; color: var(--text-color-dark); margin-bottom: 20px;">Sesiones Recientes</h3>
+                <div class="card">
+                    <h4>Sesión Ordinaria del 20 de Enero de 2026</h4>
+                    <p>Se debatió y aprobó la Ley de Fomento Pyme. Detalles de la sesión y votaciones disponibles.</p>
+                    <a href="#" class="button">Ver Acta</a>
+                </div>
+                <div class="card" style="margin-top: 20px;">
+                    <h4>Sesión Extraordinaria del 10 de Diciembre de 2025</h4>
+                    <p>Tratamiento de presupuesto y leyes económicas. Accede al informe completo.</p>
+                    <a href="#" class="button">Ver Informe</a>
+                </div>
+            </section>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Diputados de Posadas. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.getElementById('mobile-menu').addEventListener('click', function() {
+            const nav = document.getElementById('nav');
+            const toggle = document.getElementById('mobile-menu');
+            nav.classList.toggle('nav-open');
+            toggle.classList.toggle('active');
+        });
+        document.querySelectorAll('#nav ul li a').forEach(item => {
+            item.addEventListener('click', function() {
+                // Optional: Close menu after clicking on a link
+                // document.getElementById('nav').classList.remove('nav-open');
+                // document.getElementById('mobile-menu').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>

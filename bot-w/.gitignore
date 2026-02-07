@@ -1,0 +1,11 @@
+# Ignorar archivos de log
+conversations.log
+
+# Ignorar archivos de resultados de escaneo
+scan_results.json
+
+# Ignorar caché de Python
+__pycache__/
+
+# Ignorar entorno virtual
+venv/

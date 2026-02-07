@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutas - Sistema de Agua</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8dgpcx8MVXpA9VqA7xYg58S3tVvB8t/M+B52mG80T8F/5Zf6V0E+N/5A=="
+        crossorigin=""></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-tint"></i>
+                <h1>Sistema de Agua</h1>
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="rutas.html" class="active">Rutas</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="deudas.html">Deudas</a></li>
+                    <li><a href="inventario.html">Inventario</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>Gestión de Rutas</h2>
+
+        <section class="form-card" style="margin-bottom: 30px;">
+            <h3><i class="fas fa-plus-circle"></i> Añadir Nueva Ruta</h3>
+            <form id="addRouteForm">
+                <div class="form-group">
+                    <label for="routeName">Nombre de la Ruta:</label>
+                    <input type="text" id="routeName" required>
+                </div>
+                <div class="form-group">
+                    <label for="routeDriver">Conductor:</label>
+                    <input type="text" id="routeDriver">
+                </div>
+                <button type="submit" class="button-accent"><i class="fas fa-plus"></i> Añadir Ruta</button>
+            </form>
+        </section>
+
+        <section>
+            <h3><i class="fas fa-route"></i> Rutas Existentes</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Conductor</th>
+                        <th>Clientes Asignados</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="routesTableBody">
+                    <!-- Rutas se cargarán aquí por JavaScript -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="routeDetailsSection" class="form-card" style="margin-top: 30px; display: none;">
+            <h3 id="routeDetailsTitle"></h3>
+            <div class="form-group">
+                <label for="assignCustomer">Asignar Cliente:</label>
+                <select id="assignCustomer">
+                    <option value="">Seleccionar cliente</option>
+                </select>
+                <button type="button" class="button" onclick="assignCustomerToRoute()"><i class="fas fa-user-plus"></i> Asignar</button>
+            </div>
+            <h4>Clientes en esta Ruta:</h4>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Estado Entrega (Hoy)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="customersInRouteTableBody">
+                    <!-- Clientes y estado de entrega se cargarán aquí -->
+                </tbody>
+            </table>
+            <button type="button" class="button-danger" onclick="closeRouteDetails()"><i class="fas fa-times"></i> Cerrar Detalles</button>
+        </section>
+
+        <section class="form-card" style="margin-top: 50px;">
+            <h3><i class="fas fa-map-marked-alt"></i> Visualizar Ruta Optimizada (desde Python)</h3>
+            <div class="form-group">
+                <label for="routeJsonInput">Pega aquí el JSON de la ruta optimizada (desde `route_optimizer_example.py`):</label>
+                <textarea id="routeJsonInput" rows="10" placeholder='[{"order": 1, "name": "Cliente 1...", "lat": -34.82, "lon": -58.51}, ...]'></textarea>
+            </div>
+            <button type="button" class="button-accent" onclick="loadOptimizedRoute()"><i class="fas fa-map-marker-alt"></i> Cargar Ruta en Mapa</button>
+            <div id="optimizedRouteMap" style="height: 500px; width: 100%; border-radius: 8px; margin-top: 20px; border: 1px solid var(--border-color);"></div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Sistema de Agua. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData(); // Ensure appData is loaded
+
+            const routesTableBody = document.getElementById('routesTableBody');
+            const addRouteForm = document.getElementById('addRouteForm');
+            const routeDetailsSection = document.getElementById('routeDetailsSection');
+            const routeDetailsTitle = document.getElementById('routeDetailsTitle');
+            const customersInRouteTableBody = document.getElementById('customersInRouteTableBody');
+            const assignCustomerSelect = document.getElementById('assignCustomer');
+            const routeJsonInput = document.getElementById('routeJsonInput');
+            const optimizedRouteMap = document.getElementById('optimizedRouteMap');
+
+            let map = null; // Variable para el mapa de Leaflet
+            let currentRouteId = null;
+
+            function renderRoutes() {
+                routesTableBody.innerHTML = '';
+                if (appData.routes.length === 0) {
+                    routesTableBody.innerHTML = '<tr><td colspan="5">No hay rutas registradas.</td></tr>';
+                    return;
+                }
+                appData.routes.forEach(route => {
+                    const row = routesTableBody.insertRow();
+                    row.innerHTML = `
+                        <td data-label="ID" class="id-cell">${route.id}</td>
+                        <td data-label="Nombre">${route.name}</td>
+                        <td data-label="Conductor">${route.driver || '-'}</td>
+                        <td data-label="Clientes">${route.customers.length}</td>
+                        <td data-label="Acciones" class="actions">
+                            <button class="button" onclick="showRouteDetails('${route.id}')"><i class="fas fa-info-circle"></i></button>
+                            <button class="button-danger" onclick="deleteRouteUI('${route.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                });
+            }
+
+            function populateCustomerSelect(routeCustomers = []) {
+                assignCustomerSelect.innerHTML = '<option value="">Seleccionar cliente</option>';
+                const customersNotInRoute = appData.customers.filter(c => !routeCustomers.includes(c.id));
+                customersNotInRoute.forEach(customer => {
+                    const option = document.createElement('option');
+                    option.value = customer.id;
+                    option.textContent = customer.name;
+                    assignCustomerSelect.appendChild(option);
+                });
+            }
+
+            function renderCustomersInRoute(routeId) {
+                customersInRouteTableBody.innerHTML = '';
+                const route = getRouteById(routeId);
+                if (!route || route.customers.length === 0) {
+                    customersInRouteTableBody.innerHTML = '<tr><td colspan="3">No hay clientes asignados a esta ruta.</td></tr>';
+                    return;
+                }
+
+                const today = new Date().toISOString().slice(0, 10);
+
+                route.customers.forEach(customerId => {
+                    const customer = getCustomerById(customerId);
+                    if (customer) {
+                        const delivery = appData.deliveries.find(d => d.customerId === customerId && d.routeId === routeId && d.date === today);
+                        const status = delivery ? delivery.status : 'pending';
+                        const statusBadgeClass = `status-badge ${status}`;
+
+                        const row = customersInRouteTableBody.insertRow();
+                        row.innerHTML = `
+                            <td data-label="Cliente">${customer.name}</td>
+                            <td data-label="Estado"><span class="${statusBadgeClass}">${status}</span></td>
+                            <td data-label="Acciones" class="actions">
+                                ${status === 'pending' ?
+                                    `<button class="button-accent" onclick="markDeliveryStatus('${delivery ? delivery.id : 'new'}', '${customerId}', '${routeId}', 'delivered')"><i class="fas fa-check"></i> Entregado</button>` : ''
+                                }
+                                ${status === 'delivered' ?
+                                    `<button class="button" onclick="markDeliveryStatus('${delivery.id}', '${customerId}', '${routeId}', 'pending')"><i class="fas fa-undo"></i> Pendiente</button>` : ''
+                                }
+                                <button class="button-danger" onclick="removeCustomerFromRoute('${routeId}', '${customerId}')"><i class="fas fa-user-minus"></i></button>
+                            </td>
+                        `;
+                    }
+                });
+            }
+
+            addRouteForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const routeName = document.getElementById('routeName').value;
+                const routeDriver = document.getElementById('routeDriver').value;
+                addRoute({ name: routeName, driver: routeDriver, customers: [] });
+                renderRoutes();
+                addRouteForm.reset();
+            });
+
+            window.showRouteDetails = (id) => {
+                currentRouteId = id;
+                const route = getRouteById(id);
+                if (route) {
+                    routeDetailsTitle.textContent = `Detalles de Ruta: ${route.name}`;
+                    populateCustomerSelect(route.customers);
+                    renderCustomersInRoute(id);
+                    routeDetailsSection.style.display = 'block';
+                }
+            };
+
+            window.closeRouteDetails = () => {
+                routeDetailsSection.style.display = 'none';
+                currentRouteId = null;
+                renderRoutes(); // Refresh main routes table
+            };
+
+            window.assignCustomerToRoute = () => {
+                const customerId = assignCustomerSelect.value;
+                if (!customerId || !currentRouteId) return;
+
+                const route = getRouteById(currentRouteId);
+                if (route && !route.customers.includes(customerId)) {
+                    route.customers.push(customerId);
+                    updateRoute(route);
+                    renderCustomersInRoute(currentRouteId);
+                    populateCustomerSelect(route.customers);
+                }
+            };
+
+            window.removeCustomerFromRoute = (routeId, customerId) => {
+                if (confirm('¿Estás seguro de que quieres quitar este cliente de la ruta?')) {
+                    const route = getRouteById(routeId);
+                    if (route) {
+                        route.customers = route.customers.filter(id => id !== customerId);
+                        updateRoute(route);
+                        renderCustomersInRoute(routeId);
+                        populateCustomerSelect(route.customers);
+                    }
+                }
+            };
+
+            window.deleteRouteUI = (id) => {
+                if (confirm('¿Estás seguro de que quieres eliminar esta ruta? También se eliminarán las entregas asociadas.')) {
+                    deleteRoute(id);
+                    renderRoutes();
+                    if (currentRouteId === id) {
+                        closeRouteDetails();
+                    }
+                }
+            };
+
+            window.markDeliveryStatus = (deliveryId, customerId, routeId, status) => {
+                const today = new Date().toISOString().slice(0, 10);
+                let delivery = appData.deliveries.find(d => d.id === deliveryId);
+
+                if (deliveryId === 'new') { // Create new delivery for today
+                    const customer = getCustomerById(customerId);
+                    const productsForDelivery = [{ id: 'prod-1', qty: 1 }]; // Example: default 1 bidon 20L for new delivery
+                    
+                    addDelivery({
+                        customerId,
+                        routeId,
+                        date: today,
+                        products: productsForDelivery,
+                        status: status
+                    });
+
+                    // Update product stock if delivered
+                    if (status === 'delivered') {
+                        productsForDelivery.forEach(p => {
+                            const product = getProductById(p.id);
+                            if (product) {
+                                product.stock -= p.qty;
+                                updateProduct(product);
+                            }
+                        });
+                    }
+                } else if (delivery) { // Update existing delivery
+                    delivery.status = status;
+                    updateDelivery(delivery);
+                }
+                renderCustomersInRoute(routeId); // Re-render to show updated status
+            };
+
+            // --- Optimized Route Map Integration ---
+            window.loadOptimizedRoute = () => {
+                let routeData;
+                try {
+                    routeData = JSON.parse(routeJsonInput.value);
+                    if (!Array.isArray(routeData) || routeData.length === 0) {
+                        alert('El JSON de la ruta no es válido o está vacío.');
+                        return;
+                    }
+                } catch (e) {
+                    alert('Error al parsear el JSON de la ruta: ' + e.message);
+                    return;
+                }
+
+                if (map) {
+                    map.remove(); // Remove existing map instance
+                }
+
+                // Initialize map (center on the first point or a default Ezeiza location)
+                const defaultCenter = routeData.length > 0 ? [routeData[0].lat, routeData[0].lon] : [-34.85, -58.53];
+                map = L.map('optimizedRouteMap').setView(defaultCenter, 13); // Zoom level
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                const latlngs = [];
+                
+                routeData.forEach((point, index) => {
+                    const lat = point.lat;
+                    const lon = point.lon;
+                    const popupContent = `<b>${point.order}. ${point.name}</b><br>Distancia desde depósito: ${point.distance_from_depot_km.toFixed(2)} km`;
+                    let markerIcon;
+
+                    if (index === 0) { // Assume first point is the depot for visualization purposes
+                        markerIcon = L.icon({
+                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34],
+                            shadowSize: [41, 41]
+                        });
+                        L.marker([lat, lon], {icon: markerIcon}).addTo(map)
+                            .bindPopup(`<b>Depósito</b><br>${point.address || 'Punto de Inicio'}`).openPopup();
+                    } else {
+                        // Use default blue marker for customers
+                        markerIcon = L.icon({
+                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34],
+                            shadowSize: [41, 41]
+                        });
+                        L.marker([lat, lon], {icon: markerIcon}).addTo(map)
+                            .bindPopup(popupContent);
+                    }
+                    latlngs.push([lat, lon]);
+                });
+
+                // Draw polyline connecting the points in order
+                if (latlngs.length > 1) {
+                    const polyline = L.polyline(latlngs, {color: 'blue', weight: 4, opacity: 0.7}).addTo(map);
+                    map.fitBounds(polyline.getBounds()); // Adjust map to show all points
+                } else if (latlngs.length === 1) {
+                    map.setView(latlngs[0], 15); // If only one point, zoom in on it
+                }
+            };
+
+            renderRoutes();
+        });
+    </script>
+</body>
+</html>

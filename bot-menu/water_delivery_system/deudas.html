@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deudas - Sistema de Agua</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-tint"></i>
+                <h1>Sistema de Agua</h1>
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="rutas.html">Rutas</a></li>
+                    <li><a href="clientes.html">Clientes</a></li>
+                    <li><a href="deudas.html" class="active">Deudas</a></li>
+                    <li><a href="inventario.html">Inventario</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2>Gestión de Deudas</h2>
+
+        <section>
+            <h3><i class="fas fa-money-bill-wave"></i> Clientes con Deuda Pendiente</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Monto Deuda</th>
+                        <th>Notas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="debtsTableBody">
+                    <!-- Deudas se cargarán aquí por JavaScript -->
+                </tbody>
+            </table>
+        </section>
+
+        <section class="form-card" style="margin-top: 30px;">
+            <h3><i class="fas fa-receipt"></i> Registrar Pago</h3>
+            <form id="recordPaymentForm">
+                <div class="form-group">
+                    <label for="debtorCustomer">Cliente:</label>
+                    <select id="debtorCustomer" required>
+                        <option value="">Seleccione un cliente</option>
+                        <!-- Clientes se cargarán aquí por JavaScript -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="paymentAmount">Monto del Pago:</label>
+                    <input type="number" id="paymentAmount" min="0.01" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="paymentNotes">Notas del Pago:</label>
+                    <textarea id="paymentNotes"></textarea>
+                </div>
+                <button type="submit" class="button-accent"><i class="fas fa-hand-holding-usd"></i> Registrar Pago</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Sistema de Agua. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData(); // Ensure appData is loaded
+
+            const debtsTableBody = document.getElementById('debtsTableBody');
+            const recordPaymentForm = document.getElementById('recordPaymentForm');
+            const debtorCustomerSelect = document.getElementById('debtorCustomer');
+
+            function populateCustomerSelect() {
+                debtorCustomerSelect.innerHTML = '<option value="">Seleccione un cliente</option>';
+                appData.customers.filter(c => (c.debt || 0) > 0).forEach(customer => {
+                    const option = document.createElement('option');
+                    option.value = customer.id;
+                    option.textContent = `${customer.name} (Deuda: $${(customer.debt || 0).toFixed(2)})`;
+                    debtorCustomerSelect.appendChild(option);
+                });
+            }
+
+            function renderDebts() {
+                debtsTableBody.innerHTML = '';
+                const customersWithDebt = appData.customers.filter(c => (c.debt || 0) > 0);
+
+                if (customersWithDebt.length === 0) {
+                    debtsTableBody.innerHTML = '<tr><td colspan="4">No hay clientes con deuda pendiente.</td></tr>';
+                    return;
+                }
+
+                customersWithDebt.forEach(customer => {
+                    const row = debtsTableBody.insertRow();
+                    row.innerHTML = `
+                        <td data-label="Cliente">${customer.name}</td>
+                        <td data-label="Monto Deuda">$${(customer.debt || 0).toFixed(2)}</td>
+                        <td data-label="Notas">${customer.notes || '-'}</td>
+                        <td data-label="Acciones" class="actions">
+                            <button class="button-accent" onclick="promptRecordPayment('${customer.id}', ${(customer.debt || 0).toFixed(2)})"><i class="fas fa-hand-holding-usd"></i> Pagar</button>
+                        </td>
+                    `;
+                });
+            }
+
+            recordPaymentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const customerId = debtorCustomerSelect.value;
+                const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
+                const paymentNotes = document.getElementById('paymentNotes').value;
+
+                if (!customerId || isNaN(paymentAmount) || paymentAmount <= 0) {
+                    alert('Por favor, seleccione un cliente y un monto de pago válido.');
+                    return;
+                }
+
+                const customer = getCustomerById(customerId);
+                if (customer && paymentAmount > (customer.debt || 0)) {
+                    alert('El monto del pago no puede ser mayor a la deuda pendiente.');
+                    return;
+                }
+
+                if (customer) {
+                    customer.debt = (customer.debt || 0) - paymentAmount;
+                    updateCustomer(customer); // Saves data
+                }
+
+                // Add a record of the payment
+                appData.debts.push({
+                    id: 'payment-' + Date.now(),
+                    customerId: customerId,
+                    amount: -paymentAmount, // Negative amount for payment
+                    date: new Date().toISOString().slice(0, 10),
+                    description: `Pago registrado: ${paymentNotes}`
+                });
+                saveData();
+
+
+                renderDebts();
+                populateCustomerSelect();
+                recordPaymentForm.reset();
+                alert(`Pago de $${paymentAmount.toFixed(2)} registrado para ${customer.name}.`);
+            });
+
+            window.promptRecordPayment = (customerId, currentDebt) => {
+                const customer = getCustomerById(customerId);
+                if (!customer) return;
+
+                const amountStr = prompt(`Registrar pago para ${customer.name}. Deuda actual: $${currentDebt}. Ingrese el monto del pago:`, currentDebt);
+                const paymentAmount = parseFloat(amountStr);
+
+                if (amountStr !== null && !isNaN(paymentAmount) && paymentAmount > 0) {
+                    if (paymentAmount > currentDebt) {
+                        alert('El monto del pago no puede ser mayor a la deuda pendiente.');
+                        return;
+                    }
+                    if (customer) {
+                        customer.debt = (customer.debt || 0) - paymentAmount;
+                        updateCustomer(customer);
+                    }
+
+                    // Add a record of the payment
+                    appData.debts.push({
+                        id: 'payment-' + Date.now(),
+                        customerId: customerId,
+                        amount: -paymentAmount, // Negative amount for payment
+                        date: new Date().toISOString().slice(0, 10),
+                        description: `Pago registrado vía botón rápido`
+                    });
+                    saveData();
+
+                    renderDebts();
+                    populateCustomerSelect();
+                    alert(`Pago de $${paymentAmount.toFixed(2)} registrado para ${customer.name}.`);
+                } else if (amountStr !== null) {
+                    alert('Monto de pago inválido.');
+                }
+            };
+
+
+            renderDebts();
+            populateCustomerSelect();
+        });
+    </script>
+</body>
+</html>
+

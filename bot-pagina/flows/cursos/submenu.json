@@ -1,0 +1,4 @@
+{
+    "option_text": "Bot para Venta de Cursos",
+    "entry_point": "main.handle_cursos_flow"
+}

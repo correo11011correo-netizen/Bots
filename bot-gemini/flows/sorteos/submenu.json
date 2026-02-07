@@ -1,0 +1,4 @@
+{
+  "option_text": "🎟️ Participar en sorteos",
+  "entry_point": "sorteos_flow.handle_sorteo"
+}
